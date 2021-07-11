@@ -16,8 +16,8 @@ func main() {
 		os.Getenv("RABBITMQ_GOLANG_QUEUE"),
 	)
 
-	defer conn.Close()
 	defer channel.Close()
+	defer conn.Close()
 
 	service.ConsumeQueue(channel, queue)
 }
