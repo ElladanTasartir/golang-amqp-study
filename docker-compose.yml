@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  rabbit:
+    image: rabbitmq:3.7-management
+    ports:
+      - 5672:5672
+      - 15672:15672
+    container_name: amqp
+
+  publisher:
+    container_name: publisher
+    build: 
+      context: ./publisher
+    volumes:
+      - ./publisher:/go/src/app
+    depends_on: 
+      - rabbit
+    links:
+      - rabbit:rabbit
+    ports:
+      - 3000:8080
+
+  subscriber:
+    container_name: subscriber
+    build: 
+      context: ./subscriber
+    volumes:
+      - ./subscriber:/go/src/app
+    depends_on: 
+      - rabbit
+    links:
+      - rabbit:rabbit
+    ports:
+      - 3001:8080
