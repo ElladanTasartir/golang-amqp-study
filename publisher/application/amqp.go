@@ -7,7 +7,15 @@ import (
 	"github.com/streadway/amqp"
 )
 
-func ConnectAMQP(host string, queueName string) (*amqp.Connection, *amqp.Channel, *amqp.Queue) {
+type AMQPClient struct {
+	Conn    *amqp.Connection
+	Channel *amqp.Channel
+	Queue   *amqp.Queue
+}
+
+var AmqpClient *AMQPClient
+
+func ConnectAMQP(host string, queueName string) *AMQPClient {
 	conn, err := amqp.Dial(host)
 	if err != nil {
 		util.FailOnError(err, "Failed to connect to RabbitMQ")
@@ -32,5 +40,11 @@ func ConnectAMQP(host string, queueName string) (*amqp.Connection, *amqp.Channel
 		fmt.Sprintf("Successfully started RabbitMQ %s", host),
 	)
 
-	return conn, channel, &queue
+	AmqpClient = &AMQPClient{
+		Conn:    conn,
+		Channel: channel,
+		Queue:   &queue,
+	}
+
+	return AmqpClient
 }
