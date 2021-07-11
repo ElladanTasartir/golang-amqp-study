@@ -21,11 +21,15 @@ func ConsumeQueue(channel *amqp.Channel, queue *amqp.Queue) {
 		util.FailOnError(err, "Failed to consume")
 	}
 
+	forever := make(chan bool)
+
 	go readFromQueue(messages)
 
 	fmt.Println(
 		fmt.Sprintf("Messages are being read from queue %s", queue.Name),
 	)
+
+	<-forever
 }
 
 func readFromQueue(messages <-chan amqp.Delivery) {
